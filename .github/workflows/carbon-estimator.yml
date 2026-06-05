@@ -1,0 +1,50 @@
+name: Cloud Carbon Footprint Estimator
+
+on: [push] # Code push pannum bodhu automatic-ah trigger aagum
+
+jobs:
+  calculate-carbon:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Run Carbon Calculation Script
+        run: |
+          python -c "
+          import json
+
+          # 1. Read the dummy cloud file
+          with open('infra.json') as f:
+              data = json.load(f)
+
+          # 2. Simple Simulation Logic (Math Formula)
+          # Oru standard server (t3.xlarge) approx-ah oru manineraku 0.1 kg CO2 emit pannum nu calculations vachupom.
+          servers = data['total_servers']
+          server_type = data['server_type']
+          
+          # Calculation Formula
+          co2_per_hour = servers * 0.1 
+          co2_per_month = co2_per_hour * 24 * 30
+
+          # 3. Output display
+          print('==================================================')
+          print('🌱 GREEN DEVOPS - CARBON EMISSION REPORT 🌱')
+          print('==================================================')
+          print(f'Project Name: {data[\"project_name\"]}')
+          print(f'Cloud Provider: {data[\"cloud_provider\"]}')
+          print(f'Infrastructure Scanned: {servers} x {server_type} servers')
+          print(f'Estimated Carbon Footprint: {co2_per_month:.2f} kg CO2 per month')
+          print('==================================================')
+          if co2_per_month > 20:
+              print('⚠️ RECOMMENDATION: Your carbon emission is high! Consider using smaller instances (e.g., t3.micro) or switching to a greener region.')
+          else:
+              print('✅ Your infrastructure meets green cloud standards.')
+          print('==================================================')
+          "
