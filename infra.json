@@ -1,0 +1,7 @@
+{
+  "project_name": "My Internship App",
+  "cloud_provider": "AWS",
+  "server_type": "t3.xlarge",
+  "region": "us-east-1",
+  "total_servers": 5
+}
